@@ -48,11 +48,13 @@ System_Daemon::start();
 		if( $cmd == 'get' ) {
 			$key = trim( (string)$buf[1] );
 			$key = trim( $key );
-			$collection = explode( '|', $key );
-			$collection = $collection[0];
-			$query = json_decode( $collection[1], true );
-			if( mconnect() && !empty( $collection ) ) {
-				$collection = $mongo->selectDB( $collection );
+			$chunk = explode( '|', $key );
+			$database = $chunk[0];
+			$collection = $chunk[1];
+			$query = json_decode( $chunk[2], true );
+			if( mconnect() && !empty( $database ) && !empty( $collection ) ) {
+				$database = $mongo->selectDB( $database );
+				$collection = $database->selectCollection( $collection );
 				$result = $collection->find( $query );
 				$data = array();
 				foreach( $result as $d ) {
