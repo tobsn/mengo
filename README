@@ -1,1 +1,14 @@
 work in progress!
+
+file list
+=========
+mengo.php
+ - the "daemon" itself
+/System/ folder
+ - System_Daemon class from Kevin van Zonneveld <http://trac.plutonia.nl/projects/system_daemon>
+mengodaemon
+ - init.d script
+monitrc.sample
+ - sample for your monitrc config
+   (don't forget to change the port!)
+
