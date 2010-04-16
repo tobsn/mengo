@@ -1,6 +1,15 @@
 #!/usr/local/bin/php -q
 <?php
 
+define( 'MONGODB_HOST', 'localhost' );
+define( 'MONGODB_PORT', 27018 );
+
+// listen only on hostname interface
+// define( 'LISTEN_HOST', trim( shell_exec( 'hostname -i' ) ) );
+// listen on every interface (some php versions perfer NULL instead of 0)
+define( 'LISTEN_HOST', 0 );
+define( 'LISTEN_PORT', 7734 );
+
 error_reporting( E_ALL ^ E_NOTICE );
 set_time_limit( 0 );
 ob_implicit_flush();
@@ -29,17 +38,13 @@ System_Daemon::start();
 		}
 		else {
 			$connected = false;
-			$mongo = new Mongo( 'localhost:27018', array( 'timeout' => 2000 ) );
+			$mongo = new Mongo( MONGODB_HOST.':'.MONGODB_PORT, array( 'timeout' => 2000 ) );
 			if( $mongo->connect() ) {
 				$connected = true;
 				return true;
 			}
 		}
 	}
-
-#	$address = trim( shell_exec('hostname -i') );
-	$address = 0;
-	$port = 7734;
 
 	function msg( $socket, $buf ) {
 		global $mongo, $connected;
@@ -75,7 +80,7 @@ System_Daemon::start();
 		echo "socket_create() failed, reason: " . socket_strerror($master) . "\n";
 	}
 	socket_set_option( $master, SOL_SOCKET,SO_REUSEADDR, 1 );
-	if( ( $ret = socket_bind( $master, $address, $port ) ) < 0 ) {
+	if( ( $ret = socket_bind( $master, LISTEN_HOST, LISTEN_PORT ) ) < 0 ) {
 		echo "socket_bind() failed, reason: " . socket_strerror($ret) . "\n";
 	}
 	if( ( $ret = socket_listen( $master, 5 ) ) < 0 ) {
