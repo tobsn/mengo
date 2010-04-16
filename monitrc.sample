@@ -1,0 +1,10 @@
+check process mengodaemon with pidfile /var/run/mengodaemon/mengpdaemon.pid
+    start program = "/etc/init.d/mengpdaemon start"
+    stop program  = "/etc/init.d/mengpdaemon stop"
+    if cpu > 60% for 2 cycles then alert
+    if cpu > 96% for 5 cycles then restart
+    if failed port 7734
+       with timeout 6 seconds
+       then restart
+    if 4 restarts within 20 cycles then timeout
+    group mongodb
